@@ -13,3 +13,8 @@ Example screenshot:<br/>
 4. Click Win+R, type `cmd` and press enter
 5. Type `cd %USERPROFILE%\Downloads\ModrinthStats-main\ && python main.py`
 6. Do what it says
+
+## 🔨 Contributing
+Feel free to make any pull requests, I probably won't change much in the project, therefore I won't have to deal with merging :D
+
+How to setup the IDE, you ask-I used Notepad for this project xD. I mean you can use VS Code (most friendly), Notepad++ (tragic) or Sublime Text (fine)

@@ -8,7 +8,7 @@ def parse_js_clipboard() -> RequestInfo:
   code = pyperclip.paste().splitlines()
   return parse_js(code)
 
-def parse_js(code: str) -> RequestInfo:
+def parse_js(code: list[str]) -> RequestInfo:
   url: str = code[0][8:-4]
   method: str = code[-4][13:-2]
   headers: RequestHeaders = {}

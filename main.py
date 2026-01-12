@@ -1,10 +1,11 @@
 import pyperclip
 import time
+import os
 
 from datetime import datetime
 
 from api import API
-from parser import parse_js_clipboard
+from parser import parse_js, parse_js_clipboard
 from colorful import print, cls
 
 def ready():
@@ -19,22 +20,38 @@ def guide():
   print("4. Click on the Modrinth logo on the top-left corner of the page")
   print("5. Right-click on the last request in the network tab")
   print("6. Click {select}Copy{reset} > {select}Copy as fetch")
-  print("After, this script should handle the rest. Just leave it running while you're doing it.")
 
-  while True:
-    time.sleep(.125)
-    if ready():
-      break
+  if os.name == "nt":
+    print("After, this script should handle the rest. Just leave it running while you're doing it.")
+
+    while True:
+      time.sleep(.125)
+      if ready():
+        break
+  else:
+    print("After, please paste the output here.")
 
 def main():
-  if not ready():
+  api = API()
+  if os.name == "nt":
+    if not ready():
+      guide()
+
+    text = pyperclip.paste()
+  else:
     guide()
+
+    text = []
+    while True:
+      line = input("> ")
+      if line == "":
+        break
+
+      text.append(line)
 
   cls()
   print("[API] Collected token")
-
-  api = API()
-  api.token = parse_js_clipboard()[2]['authorization']
+  api.token = parse_js(text)[2]['authorization']
 
   profile = api.get_profile()
   print("[API] Collected profile info")
@@ -76,10 +93,10 @@ def main():
   print("┌─────────┤ Modrinth Stats ├─────────┐")
   print("│                                    │")
   print("│  {blue} • {reset}                               │")
-  print("│  {blue}\_/{reset}     {gold}@%-24s{reset} │" % profile['username'])
+  print("│  {blue}\\_/{reset}     {gold}@%-24s{reset} │" % profile['username'])
   print("│  {blue} | {reset}     {gold}avg. approval time:{reset}       │")
   print("|  {blue} | {reset}    {select}%-25s{reset} │" % ptAvgSTR)
-  print("│  {blue}/ \{reset}                               │")
+  print("│  {blue}/ \\{reset}                               │")
   print("│                                    │")
   print("└────────────────────────────────────┘")
 

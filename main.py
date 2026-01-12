@@ -37,7 +37,7 @@ def main():
     if not ready():
       guide()
 
-    text = pyperclip.paste()
+    text = pyperclip.paste().splitlines()
   else:
     guide()
 
@@ -83,7 +83,7 @@ def main():
   print("[API] Collected all project times")
 
   ptAvg /= len(projectTimes)
-  ptAvgSTR = time.strftime('%w weeks, %d days, %H hours', time.gmtime(ptAvg))
+  ptAvgSTR = timetostr(ptAvg)
 
   print("[API] Calculated project time average")
   time.sleep(.065)
@@ -95,22 +95,42 @@ def main():
   print("│  {blue} • {reset}                               │")
   print("│  {blue}\\_/{reset}     {gold}@%-24s{reset} │" % profile['username'])
   print("│  {blue} | {reset}     {gold}avg. approval time:{reset}       │")
-  print("|  {blue} | {reset}    {select}%-25s{reset} │" % ptAvgSTR)
+  print("|  {blue} | {reset}    {select}%-26s{reset} │" % ptAvgSTR)
   print("│  {blue}/ \\{reset}                               │")
   print("│                                    │")
   print("└────────────────────────────────────┘")
 
-  print(  "┌─────────┤ Modrinth Projects ├─────────┐")
-  print(  "│                                       │")
-  print(  "│ {blue}|         Name         | MC Version |{reset} │")
-  print(  "│ {blue}|----------------------|------------|{reset} │")
+  print(  "┌──────────┤ Modrinth Projects ├──────────┐")
+  print(  "│                                         │")
+  print(  "│ {blue}|          Name          | MC Version |{reset} │")
+  print(  "│ {blue}|------------------------|------------|{reset} │")
   for proj in projects:
     if proj['status'] != 'approved':
       continue
 
-    print("│ {blue}| {gold}%20s{blue} | %10s |{reset} │" % (proj['slug'], get(proj['game_versions'], 0, "-")))
-  print(  "│                                       │")
-  print(  "└───────────────────────────────────────┘")
+    print("│ {blue}| {gold}%22s{blue} | %10s |{reset} │" % (proj['slug'], get(proj['game_versions'], 0, "-")))
+  print(  "│                                         │")
+  print(  "└─────────────────────────────────────────┘")
+
+def timetostr(totalSeconds):
+  weeks = totalSeconds // 604800
+  remainingSeconds = totalSeconds % 604800
+
+  days = remainingSeconds // 86400
+  remainingSeconds %= 86400
+
+  hours = remainingSeconds // 3600
+
+  ptAvgSTR = f"{numtostr(weeks)} weeks, " + \
+             f"{numtostr(days)} days, " + \
+             f"{numtostr(hours)} hours"
+  return ptAvgSTR
+
+def numtostr(number):
+  intvar = int(number)
+  if number == intvar:
+    return str(intvar)
+  else: return str(number)
 
 def get(arr, index, default):
   try:
